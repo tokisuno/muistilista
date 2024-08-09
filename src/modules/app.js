@@ -34,10 +34,13 @@ export class TodoItem {
         const secs = date.getSeconds().toString().padStart(2, "0");
         return `${year}${month}${day}${hours}${mins}${secs}`;
     }
+    markAsComplete() {
+        console.log('tba');
+    }
 }
 
 // to populate the page
-let todo = new Home();
+export let todo = new Home();
 todo.addList(new TodoList());
 todo.addList(new TodoList("second"));
 
@@ -47,28 +50,37 @@ todo.addList(new TodoList("second"));
 (todo.lists.find((list) => list.name === "second")).addItem(new TodoItem("take photos", "taking photos with the lads"));
 
 // I hate storage
-function storageAvailable(type) {
-  let storage;
-  try {
-    storage = window[type];
-    const x = "__storage_test__";
-    storage.setItem(x, x);
-    storage.removeItem(x);
-    return true;
-  } catch (e) {
-    return (
-      e instanceof DOMException &&
-      e.name === "QuotaExceededError" &&
-      // acknowledge QuotaExceededError only if there's something already stored
-      storage &&
-      storage.length !== 0
-    );
-  }
-}
-// saves to browser local storage
-todo.lists.forEach(list => {
-    if (storageAvailable("localStorage")) {
-	localStorage.setItem(`${list.name}`, JSON.stringify(list));
-	console.log(list);
-    } 
-});
+// TODO: Figure out how to use localStorage
+//function storageAvailable(type) {
+//  let storage;
+//  try {
+//    storage = window[type];
+//    const x = "__storage_test__";
+//    storage.setItem(x, x);
+//    storage.removeItem(x);
+//    return true;
+//  } catch (e) {
+//    return (
+//      e instanceof DOMException &&
+//      e.name === "QuotaExceededError" &&
+//      // acknowledge QuotaExceededError only if there's something already stored
+//      storage &&
+//      storage.length !== 0
+//    );
+//  }
+//}
+//
+//function saveData(todo) {
+//    todo.lists.forEach(list => {
+//        if (storageAvailable("localStorage")) {
+//            localStorage.setItem(`${list.name}`, JSON.stringify(list));
+//            console.log(list);
+//        } 
+//    });
+//}
+//
+//function accessData() {
+//    if (storageAvailable("localStorage")) {
+//        console.log(JSON.stringify(localStorage)); 
+//    }
+//}
