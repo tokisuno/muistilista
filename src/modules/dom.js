@@ -1,4 +1,4 @@
-import { todo } from './app.js';
+import { todo } from './storage.js';
 console.log('we in da dom now');
 const body = document.querySelector('body');
 
@@ -8,13 +8,16 @@ container.setAttribute('class', 'container');
 todo.lists.find(list => {
     let todoList = document.createElement('div');
     todoList.setAttribute('class', 'listContainer');
+
     let todoListName = document.createElement('div');
     todoListName.setAttribute('class', 'todoListName');
     todoListName.textContent = `${list.name}`;
     todoList.append(todoListName);
+
     list.items.forEach(item => {
         let todoListItem = document.createElement('div');
         todoListItem.setAttribute('class', 'todoListItem');
+
         let title = document.createElement('div');
         title.textContent = `${item.title}`;
         title.setAttribute('class', 'itemTitle');
@@ -29,9 +32,9 @@ todo.lists.find(list => {
 
         let completeButton = document.createElement('button');
         completeButton.textContent = `${item.status}`;
-        completeButton.setAttribute('class', 'markAsComplete');
+        completeButton.setAttribute('class', 'toggleStatus');
         completeButton.addEventListener('click', () => {
-            (item.status == false) ? item.status = true : item.status = false;
+            item.toggleStatus();
             completeButton.textContent = `${item.status}`;
             console.log(item);
         });
