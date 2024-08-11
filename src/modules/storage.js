@@ -19,15 +19,21 @@ function storageAvailable(type) {
   }
 }
 
-
+let asdf = false;
 export let todo = new Home();
-todo.addList(new TodoList());
-todo.addList(new TodoList("second"));
 
-(todo.lists.find((list) => list.name === "default")).addItem(new TodoItem("do homework", "finish assignment"));
-(todo.lists.find((list) => list.name === "default")).addItem(new TodoItem("brush teeth", "teeth brushing time"));
-(todo.lists.find((list) => list.name === "default")).addItem(new TodoItem("record video", "video recording time"));
-(todo.lists.find((list) => list.name === "second")).addItem(new TodoItem("take photos", "taking photos with the lads"));
+if (asdf === true) {
+    todo.addList(new TodoList());
+    todo.addList(new TodoList("second"));
+
+    (todo.lists.find((list) => list.name === "default")).addItem(new TodoItem("do homework", "finish assignment"));
+    (todo.lists.find((list) => list.name === "default")).addItem(new TodoItem("brush teeth", "teeth brushing time"));
+    (todo.lists.find((list) => list.name === "default")).addItem(new TodoItem("record video", "video recording time"));
+    (todo.lists.find((list) => list.name === "second")).addItem(new TodoItem("take photos", "taking photos with the lads"));
+    saveData(todo);
+} else {
+    //accessData();
+}
 
 function saveData(todo) {
     todo.lists.forEach(list => {
@@ -37,14 +43,37 @@ function saveData(todo) {
     });
     console.log(localStorage);
     Object.keys(localStorage).forEach(list => {
-        console.log(JSON.parse(localStorage.getItem(list)));
+        let data = JSON.parse(localStorage.getItem(list));
+        console.log(data.items);
     });
 }
 
-function accessData() {
+export function accessData() {
     if (storageAvailable("localStorage")) {
+        let newStorage = new Home();
+        Object.keys(localStorage).forEach(list => {
+            let data = JSON.parse(localStorage.getItem(list));
+            newStorage.addList(new TodoList(data.name));
+        });
+        Object.keys(newStorage.lists).forEach(list => {
+             
+            console.log(list);
+        });
+        //Object.keys(localStorage).forEach(list => {
+        //    let items = data.items;
+        //    items.forEach(item => {
+        //        let title = item.title;
+        //        let description = item.description;
+        //        let priority = item.priority;
+        //        let status = item.status;
+        //        let id = item.id;
+        //    });
+        //    console.log(newStorage);
+        //    //console.log(data, newStorage);
+        //});
+        return newStorage;
     }
 }
 
-saveData(todo);
+//saveData(todo);
 

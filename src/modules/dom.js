@@ -1,11 +1,14 @@
-import { todo } from './storage.js';
+import { todo, accessData } from './storage.js';
+
+let z = accessData();
+
 console.log('we in da dom now');
 const body = document.querySelector('body');
 
 const container = document.createElement('div');
 container.setAttribute('class', 'container');
 
-todo.lists.find(list => {
+z.lists.find(list => {
     let todoList = document.createElement('div');
     todoList.setAttribute('class', 'listContainer');
 
