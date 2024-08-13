@@ -16,12 +16,13 @@ export class TodoList {
     }
 }
 export class TodoItem {
-    constructor(title, description, priority, status, id) {
+    constructor(title, description, dueDate, priority, status, id) {
         this.title = title || "New item";
         this.description = description || "New item description";
+        this.dueDate = dueDate || null;
         this.priority = priority || 0;
         this.status = status || false;
-	    this.id = id || this.generateItemId();
+        this.id = id || this.generateItemId();
     }
     generateItemId = () => {
         const date = new Date();
@@ -37,5 +38,3 @@ export class TodoItem {
         (this.status == false) ? this.status = true : this.status = false;
     }
 }
-
-// to populate the page

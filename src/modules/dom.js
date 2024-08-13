@@ -1,12 +1,13 @@
-import { todo, accessData } from './storage.js';
+import { saveData, accessData } from './storage.js';
 
 let z = accessData();
+console.log(z)
 
-console.log('we in da dom now');
 const body = document.querySelector('body');
 
 const container = document.createElement('div');
 container.setAttribute('class', 'container');
+
 
 z.lists.find(list => {
     let todoList = document.createElement('div');
@@ -24,10 +25,18 @@ z.lists.find(list => {
         let title = document.createElement('div');
         title.textContent = `${item.title}`;
         title.setAttribute('class', 'itemTitle');
+        todoListItem.appendChild(title); 
 
         let description = document.createElement('div');
         description.textContent = `${item.description}`;
         description.setAttribute('class', 'itemDescription');
+        todoListItem.appendChild(description); 
+
+        if (item.dueDate != null) {
+            let dueDate = document.createElement('div');
+            dueDate.textContent = `${item.dueDate}`;
+            todoListItem.appendChild(dueDate);
+        }
 
         let priority = document.createElement('div');
         priority.textContent = `${item.priority}`;
@@ -42,8 +51,6 @@ z.lists.find(list => {
             console.log(item);
         });
 
-        todoListItem.appendChild(title); 
-        todoListItem.appendChild(description); 
         todoListItem.appendChild(priority); 
         todoListItem.appendChild(completeButton); 
 
@@ -53,3 +60,7 @@ z.lists.find(list => {
 });
 
 body.append(container);
+
+window.onbeforeunload = function() {
+    saveData(z);
+}
