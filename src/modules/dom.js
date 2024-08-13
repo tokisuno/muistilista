@@ -9,17 +9,12 @@ const newProject = document.createElement('button');
 newProject.setAttribute('class', 'newProject');
 newProject.textContent = "New Project";
 
-const newItem = document.createElement('button');
-newItem.setAttribute('class', 'newItem');
-newItem.textContent = "New Item";
-
 body.appendChild(newProject);
-body.appendChild(newItem);
 
 const container = document.createElement('div');
 container.setAttribute('class', 'container');
 
-z.lists.find(list => {
+function drawAllItems(list) {
     let todoList = document.createElement('div');
     todoList.setAttribute('class', 'listContainer');
 
@@ -29,28 +24,33 @@ z.lists.find(list => {
     todoList.append(todoListName);
 
     let toggleAppearance = document.createElement('button');
-    toggleAppearance.textContent = "Show";
-    toggleAppearance.setAttribute('id', 'show');
+    toggleAppearance.textContent = "Expand";
+    toggleAppearance.setAttribute('id', 'expand');
     toggleAppearance.addEventListener('click', (e) => {
-        toggleAppearance.textContent = `${toggleAppearance.textContent === "Show" ? "Hide" : "Show"}`;
+        toggleAppearance.textContent = `${toggleAppearance.textContent === "Expand" ? "Collapse" : "Expand"}`;
         switch (e.target.id) {
-            case "hide":
-                toggleAppearance.setAttribute('id', 'show');
-                hideList();
+            case "collapse":
+                toggleAppearance.setAttribute('id', 'expand');
+                collapse();
                 break;
-            case "show":
-                toggleAppearance.setAttribute('id', 'hide');
-                drawList(list, todoList);
+            case "expand":
+                toggleAppearance.setAttribute('id', 'collapse');
+                expand(list, todoList);
                 break;
         }
     });
     todoList.appendChild(toggleAppearance);
     container.appendChild(todoList);
+    body.append(container);
+}
+z.lists.find(list => {
+    drawAllItems(list);
 });
 
-body.append(container);
-
-function drawList(list, todoList) {
+function expand(list, todoList) {
+    let details = document.createElement('div');
+    details.setAttribute('class', 'details');
+    
     list.items.forEach(item => {
         let todoListItem = document.createElement('div');
         todoListItem.setAttribute('class', 'todoListItem');
@@ -87,17 +87,18 @@ function drawList(list, todoList) {
         completeButton.addEventListener('click', () => {
             item.toggleStatus();
             status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
-            console.log(item);
         });
         todoListItem.appendChild(completeButton); 
-        todoList.appendChild(todoListItem);
+        details.appendChild(todoListItem);
+        todoList.appendChild(details);
     });
-
 }
 
-function hideList() {
-    let items = document.querySelectorAll("div.todoListItem").forEach(e => e.remove());
-    console.log(items);
+function collapse() {
+    document.querySelectorAll("div.listContainer").forEach(e => e.remove());
+    z.lists.find(list => {
+        drawAllItems(list);
+    });
 }
 
 window.onbeforeunload = function() {

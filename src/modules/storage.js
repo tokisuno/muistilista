@@ -1,5 +1,4 @@
 import { Home, TodoList, TodoItem } from './app.js';
-import { compareAsc, format } from 'date-fns';
 
 function storageAvailable(type) {
   let storage;
@@ -19,6 +18,31 @@ function storageAvailable(type) {
   }
 }
 
+export function saveData(todo) {
+    todo.lists.forEach(list => {
+        if (storageAvailable("localStorage")) {
+            localStorage.setItem(`${list.name}`, JSON.stringify(list));
+        } 
+    });
+}
+
+export function accessData() {
+    if (storageAvailable("localStorage")) {
+        let newStorage = new Home();
+        Object.keys(localStorage).forEach((list, iter) => {
+            let data = JSON.parse(localStorage.getItem(list));
+            newStorage.addList(new TodoList(data.name));
+            data.items.forEach(item => {
+                newStorage.lists[iter].addItem(new TodoItem(item.title, item.description, item.dueDate, item.priority, item.status, item.id));
+            });
+        });
+        return newStorage;
+    }
+}
+
+
+// THIS IS EXAMPLE DATA FOR TESTING.
+
 //let td = new Home();
 //td.addList(new TodoList());
 //td.addList(new TodoList("second"));
@@ -34,30 +58,3 @@ function storageAvailable(type) {
 //
 //saveData(td);
 
-export function saveData(todo) {
-    todo.lists.forEach(list => {
-        if (storageAvailable("localStorage")) {
-            console.log('here')
-            localStorage.setItem(`${list.name}`, JSON.stringify(list));
-        } 
-    });
-}
-
-export function accessData() {
-    if (storageAvailable("localStorage")) {
-        let newStorage = new Home();
-        Object.keys(localStorage).forEach((list, iter) => {
-            let data = JSON.parse(localStorage.getItem(list));
-            newStorage.addList(new TodoList(data.name));
-            data.items.forEach(item => {
-                console.log(`${item.title}, ${item.description}, ${item.dueDate}, ${item.priority}, ${item.status}, ${item.id}`);
-                newStorage.lists[iter].addItem(new TodoItem(item.title, item.description, item.dueDate, item.priority, item.status, item.id));
-            });
-        });
-        return newStorage;
-    }
-}
-
-//export let todo = (storage) => {
-//    console.log(storage);
-//};
