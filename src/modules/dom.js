@@ -14,7 +14,7 @@ body.appendChild(newProject);
 const container = document.createElement('div');
 container.setAttribute('class', 'container');
 
-function drawAllItems(list) {
+function drawAllLists(list) {
     let todoList = document.createElement('div');
     todoList.setAttribute('class', 'listContainer');
 
@@ -31,11 +31,11 @@ function drawAllItems(list) {
         switch (e.target.id) {
             case "collapse":
                 toggleAppearance.setAttribute('id', 'expand');
-                collapse();
+                collapseList();
                 break;
             case "expand":
                 toggleAppearance.setAttribute('id', 'collapse');
-                expand(list, todoList);
+                expandList(list, todoList);
                 break;
         }
     });
@@ -44,12 +44,12 @@ function drawAllItems(list) {
     body.append(container);
 }
 z.lists.find(list => {
-    drawAllItems(list);
+    drawAllLists(list);
 });
 
-function expand(list, todoList) {
-    let details = document.createElement('div');
-    details.setAttribute('class', 'details');
+function expandList(list, todoList) {
+    let items = document.createElement('div');
+    items.setAttribute('class', 'items');
     
     list.items.forEach(item => {
         let todoListItem = document.createElement('div');
@@ -60,44 +60,92 @@ function expand(list, todoList) {
         title.setAttribute('class', 'itemTitle');
         todoListItem.appendChild(title); 
 
-        let description = document.createElement('div');
-        description.textContent = `${item.description}`;
-        description.setAttribute('class', 'itemDescription');
-        todoListItem.appendChild(description); 
-
         if (item.dueDate != null) {
             let dueDate = document.createElement('div');
             dueDate.textContent = `${item.dueDate}`;
             todoListItem.appendChild(dueDate);
         }
-
-        let priority = document.createElement('div');
-        priority.textContent = `${(item.priority === 0 ? "Normal" : "Urgent")}`;
-        priority.setAttribute('class', 'itemPriority');
-        todoListItem.appendChild(priority); 
-
-
-        let status = document.createElement('div');
-        status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
-        todoListItem.appendChild(status);
-
-        let completeButton = document.createElement('button');
-        completeButton.textContent = "Toggle complete status";
-        completeButton.setAttribute('class', 'toggleStatus');
-        completeButton.addEventListener('click', () => {
-            item.toggleStatus();
-            status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+        let expandItemButton = document.createElement('button');
+        expandItemButton.textContent = "Expand";
+        expandItemButton.setAttribute('id', 'expandItem');
+        expandItemButton.addEventListener('click', () => {
+            expandItem(item, todoListItem, items, todoList);
+            expandItemButton.remove();
         });
-        todoListItem.appendChild(completeButton); 
-        details.appendChild(todoListItem);
-        todoList.appendChild(details);
+        todoListItem.appendChild(expandItemButton);
+        items.appendChild(todoListItem);
+        todoList.appendChild(items);
     });
 }
 
-function collapse() {
+function expandItem(item, todoListItem, items, todoList) {
+    let collapseItemButton = document.createElement('button');
+    collapseItemButton.textContent = "Expand";
+    collapseItemButton.setAttribute('id', 'expandItem');
+    collapseItemButton.addEventListener('click', () => {
+        collapseItem(item, todoListItem, items, todoList);
+        collapseItemButton.remove();
+    });
+    todoListItem.appendChild(collapseItemButton);
+
+    let description = document.createElement('div');
+    description.textContent = `${item.description}`;
+    description.setAttribute('class', 'itemDescription');
+    todoListItem.appendChild(description); 
+
+    let priority = document.createElement('div');
+    priority.textContent = `${(item.priority === 0 ? "Normal" : "Urgent")}`;
+    priority.setAttribute('class', 'itemPriority');
+    todoListItem.appendChild(priority); 
+
+    let status = document.createElement('div');
+    status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+    todoListItem.appendChild(status);
+
+    let completeButton = document.createElement('button');
+    completeButton.textContent = "Toggle complete status";
+    completeButton.setAttribute('class', 'toggleStatus');
+    completeButton.addEventListener('click', () => {
+        item.toggleStatus();
+        status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+    });
+    todoListItem.appendChild(completeButton); 
+}
+
+function collapseItem(item, todoListItem, items, todoList) {
+    console.log(item, todoListItem)
+    while (todoListItem.firstChild) {
+        todoListItem.removeChild(todoListItem.lastChild);
+    }
+
+    let title = document.createElement('div');
+    title.textContent = `${item.title}`;
+    title.setAttribute('class', 'itemTitle');
+    todoListItem.appendChild(title); 
+
+    if (item.dueDate != null) {
+        let dueDate = document.createElement('div');
+        dueDate.textContent = `${item.dueDate}`;
+        todoListItem.appendChild(dueDate);
+    }
+
+    let expandItemButton = document.createElement('button');
+    expandItemButton.textContent = "Expand";
+    expandItemButton.setAttribute('id', 'expandItem');
+    expandItemButton.addEventListener('click', () => {
+        expandItem(item, todoListItem, items, todoList);
+        expandItemButton.remove();
+    });
+
+    todoListItem.appendChild(expandItemButton);
+    items.appendChild(todoListItem);
+    todoList.appendChild(items);
+}
+
+function collapseList() {
     document.querySelectorAll("div.listContainer").forEach(e => e.remove());
     z.lists.find(list => {
-        drawAllItems(list);
+        drawAllLists(list);
     });
 }
 
