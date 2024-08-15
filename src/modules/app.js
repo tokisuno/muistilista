@@ -22,7 +22,10 @@ export class TodoItem {
         this.dueDate = dueDate || null;
         this.priority = priority || 0;
         this.status = status || false;
-        this.id = id || this.generateItemId();
+        this.id = id || this.tempId();
+    }
+    tempId = () => {
+        return `${Math.random().toString().slice(2,16)}`;
     }
     generateItemId = () => {
         const date = new Date();

@@ -55,6 +55,7 @@ function expandList(list, todoList) {
     list.items.forEach(item => {
         let todoListItem = document.createElement('div');
         todoListItem.setAttribute('class', 'todoListItem');
+        todoListItem.setAttribute('id', `${item.id}`);
 
         let title = document.createElement('div');
         title.textContent = `${item.title}`;
@@ -70,21 +71,43 @@ function expandList(list, todoList) {
         expandItemButton.textContent = "Expand";
         expandItemButton.setAttribute('id', 'expandItem');
         expandItemButton.addEventListener('click', () => {
-            expandItem(item, todoListItem, items, todoList);
+            expandItem(item, todoListItem, items, todoList, list);
             expandItemButton.remove();
         });
+
+        let status = document.createElement('div');
+        status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+        todoListItem.appendChild(status);
+
+        let completeButton = document.createElement('button');
+        completeButton.textContent = "Toggle complete status";
+        completeButton.setAttribute('class', 'toggleStatus');
+        completeButton.addEventListener('click', () => {
+            item.toggleStatus();
+            status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+        });
+        todoListItem.appendChild(completeButton); 
         todoListItem.appendChild(expandItemButton);
+
         items.appendChild(todoListItem);
         todoList.appendChild(items);
+
+        let removeItemButton = document.createElement('button');
+        removeItemButton.textContent = 'Remove';
+        removeItemButton.setAttribute('id', "remove");
+        removeItemButton.addEventListener('click', () => {
+            removeItem(item, list); 
+        });
+        todoListItem.appendChild(removeItemButton);
     });
 }
 
-function expandItem(item, todoListItem, items, todoList) {
+function expandItem(item, todoListItem, items, todoList, list) {
     let collapseItemButton = document.createElement('button');
-    collapseItemButton.textContent = "Expand";
+    collapseItemButton.textContent = "Collapse";
     collapseItemButton.setAttribute('id', 'expandItem');
     collapseItemButton.addEventListener('click', () => {
-        collapseItem(item, todoListItem, items, todoList);
+        collapseItem(item, todoListItem, items, todoList, list);
         collapseItemButton.remove();
     });
     todoListItem.appendChild(collapseItemButton);
@@ -99,19 +122,6 @@ function expandItem(item, todoListItem, items, todoList) {
     priority.setAttribute('class', 'itemPriority');
     todoListItem.appendChild(priority); 
 
-    let status = document.createElement('div');
-    status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
-    todoListItem.appendChild(status);
-
-    let completeButton = document.createElement('button');
-    completeButton.textContent = "Toggle complete status";
-    completeButton.setAttribute('class', 'toggleStatus');
-    completeButton.addEventListener('click', () => {
-        item.toggleStatus();
-        status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
-    });
-    todoListItem.appendChild(completeButton); 
-
     let editItemButton = document.createElement('button');
     let editItemButtonStatus = false;
     editItemButton.textContent = "Edit";
@@ -125,7 +135,7 @@ function expandItem(item, todoListItem, items, todoList) {
     todoListItem.appendChild(editItemButton);
 }
 
-function collapseItem(item, todoListItem, items, todoList) {
+function collapseItem(item, todoListItem, items, todoList, list) {
     console.log(item, todoListItem)
     while (todoListItem.firstChild) {
         todoListItem.removeChild(todoListItem.lastChild);
@@ -142,6 +152,10 @@ function collapseItem(item, todoListItem, items, todoList) {
         todoListItem.appendChild(dueDate);
     }
 
+    let status = document.createElement('div');
+    status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+    todoListItem.appendChild(status);
+
     let expandItemButton = document.createElement('button');
     expandItemButton.textContent = "Expand";
     expandItemButton.setAttribute('id', 'expandItem');
@@ -151,6 +165,25 @@ function collapseItem(item, todoListItem, items, todoList) {
     });
     todoListItem.appendChild(expandItemButton);
 
+    let completeButton = document.createElement('button');
+    completeButton.textContent = "Toggle complete status";
+    completeButton.setAttribute('class', 'toggleStatus');
+    completeButton.addEventListener('click', () => {
+        item.toggleStatus();
+        status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
+    });
+    todoListItem.appendChild(completeButton); 
+
+    items.appendChild(todoListItem);
+    todoList.appendChild(items);
+
+    let removeItemButton = document.createElement('button');
+    removeItemButton.textContent = 'Remove';
+    removeItemButton.setAttribute('id', "remove");
+    removeItemButton.addEventListener('click', () => {
+        removeItem(item, list); 
+    });
+    todoListItem.appendChild(removeItemButton);
 
     items.appendChild(todoListItem);
     todoList.appendChild(items);
@@ -161,6 +194,15 @@ function collapseList() {
     todoData.lists.find(list => {
         drawAllLists(list);
     });
+}
+
+function removeItem(item, list) {
+    let opt = document.getElementById(`${item.id}`);
+    opt.remove();
+    console.log(opt);
+    let index = list.items.indexOf(item);
+    if (index > -1) list.items.splice(index, 1);
+    console.log(list.items[0]);
 }
 
 window.onbeforeunload = function() {
