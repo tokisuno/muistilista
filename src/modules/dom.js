@@ -1,7 +1,8 @@
 import { saveData, accessData } from './storage.js';
+import { editItem } from './edit.js';
 
-let z = accessData();
-z.lists.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+let todoData = accessData();
+todoData.lists.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 
 const body = document.querySelector('body');
 
@@ -43,7 +44,7 @@ function drawAllLists(list) {
     container.appendChild(todoList);
     body.append(container);
 }
-z.lists.find(list => {
+todoData.lists.find(list => {
     drawAllLists(list);
 });
 
@@ -94,7 +95,7 @@ function expandItem(item, todoListItem, items, todoList) {
     todoListItem.appendChild(description); 
 
     let priority = document.createElement('div');
-    priority.textContent = `${(item.priority === 0 ? "Normal" : "Urgent")}`;
+    priority.textContent = `${(item.priority == 0 ? "Normal" : "Urgent")}`;
     priority.setAttribute('class', 'itemPriority');
     todoListItem.appendChild(priority); 
 
@@ -110,6 +111,18 @@ function expandItem(item, todoListItem, items, todoList) {
         status.textContent = `${(item.status === false ? "Incomplete" : "Complete")}`;
     });
     todoListItem.appendChild(completeButton); 
+
+    let editItemButton = document.createElement('button');
+    let editItemButtonStatus = false;
+    editItemButton.textContent = "Edit";
+    editItemButton.setAttribute('class', 'editItem');
+    editItemButton.addEventListener('click', () => {
+        editItemButtonStatus = (editItemButtonStatus == false ? editItemButtonStatus = true : editItemButtonStatus = false);
+        editItemButton.setAttribute('id', `${editItemButtonStatus}`);
+
+        editItem(item, editItemButtonStatus);
+    });
+    todoListItem.appendChild(editItemButton);
 }
 
 function collapseItem(item, todoListItem, items, todoList) {
@@ -136,19 +149,20 @@ function collapseItem(item, todoListItem, items, todoList) {
         expandItem(item, todoListItem, items, todoList);
         expandItemButton.remove();
     });
-
     todoListItem.appendChild(expandItemButton);
+
+
     items.appendChild(todoListItem);
     todoList.appendChild(items);
 }
 
 function collapseList() {
     document.querySelectorAll("div.listContainer").forEach(e => e.remove());
-    z.lists.find(list => {
+    todoData.lists.find(list => {
         drawAllLists(list);
     });
 }
 
 window.onbeforeunload = function() {
-    saveData(z);
+    saveData(todoData);
 }

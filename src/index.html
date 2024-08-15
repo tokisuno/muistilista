@@ -6,6 +6,37 @@
   <title>...muistilista...</title>
 </head>
 <body>
+  <div class="container">
+    <dialog id="dialog">
+      <form method="dialog">
+        <p><label>
+            Title: <input type="text" id="title" required/>
+        </label></p>
 
+        <p><label>
+            Description: <input type="text" id="description" required/>
+        </label></p>
+
+        <p><label>
+            Duedate: <input type="date" id="dueDate" required/>
+        </label></p>
+        
+        <fieldset>
+          <legend>Priority:</legend> 
+          <div>
+            <input type="radio" id="normal" name="priority" value="0" />
+            <label for="normal">Normal</label>
+
+            <input type="radio" id="urgent" name="priority" value="1" />
+            <label for="urgent">Urgent</label>
+          </div>
+        </fieldset>
+
+        <div>
+          <input type="submit" id="submit" value="submit" />
+        </div>
+      </form>
+    </dialog>
+  </div>  
 </body>
 </html>
